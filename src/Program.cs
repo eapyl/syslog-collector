@@ -19,24 +19,36 @@ namespace LogCollector
                     .CreateLogger();
 
                 TcpListener listener = new TcpListener(IPAddress.Any, 5000);
-                listener.Start();
-                Console.WriteLine("Started");
-                while (true)
+                try
                 {
-                    var client = await listener.AcceptTcpClientAsync();
-
-                    var stream = client.GetStream();
-                    using (var bufferedStream = new BufferedStream(stream))
-                    using (StreamReader streamReader = new StreamReader(bufferedStream))
+                    listener.Start();
+                    Console.WriteLine("Started");
+                    while (true)
                     {
-                        while (!streamReader.EndOfStream)
+                        var client = await listener.AcceptTcpClientAsync();
+                        try
                         {
-                            var data = await streamReader.ReadLineAsync();
-                            logger.Information(data+"\n");
+                            using (var bufferedStream = new BufferedStream(client.GetStream()))
+                            using (StreamReader streamReader = new StreamReader(bufferedStream))
+                            {
+                                while (!streamReader.EndOfStream)
+                                {
+                                    var data = await streamReader.ReadLineAsync();
+                                    logger.Information(data + "\n");
+                                }
+                            }
+                        }
+                        finally
+                        {
+                            client.Dispose();
                         }
                     }
-                    stream.Dispose();
                 }
+                finally
+                {
+                    listener.Stop();
+                }
+
             }).Wait();
         }
     }
