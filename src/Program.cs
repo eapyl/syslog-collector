@@ -32,7 +32,7 @@ namespace LogCollector
                         while (!streamReader.EndOfStream)
                         {
                             var data = await streamReader.ReadLineAsync();
-                            logger.Verbose(data+"\n");
+                            logger.Information(data+"\n");
                         }
                     }
                     stream.Dispose();
