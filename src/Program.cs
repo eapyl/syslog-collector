@@ -22,7 +22,7 @@ namespace LogCollector
                 try
                 {
                     listener.Start();
-                    Console.WriteLine("Started");
+                    Console.WriteLine("Started TCP Syslog server");
                     while (true)
                     {
                         var client = await listener.AcceptTcpClientAsync();
@@ -48,7 +48,6 @@ namespace LogCollector
                 {
                     listener.Stop();
                 }
-
             }).Wait();
         }
     }
