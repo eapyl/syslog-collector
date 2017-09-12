@@ -15,7 +15,7 @@ namespace LogCollector
             Task.Run(async () =>
             {
                 var logger = new LoggerConfiguration()
-                    .WriteTo.RollingFile("logs/log-{Date}.txt", outputTemplate: "{Message}")
+                    .WriteTo.RollingFile("logs/log-{Date}.txt", outputTemplate: "{Message}", buffered: true)
                     .CreateLogger();
 
                 TcpListener listener = new TcpListener(IPAddress.Any, 5000);
@@ -46,6 +46,7 @@ namespace LogCollector
                 }
                 finally
                 {
+                    logger.Dispose();
                     listener.Stop();
                 }
             }).Wait();
